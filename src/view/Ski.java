@@ -1,6 +1,5 @@
 package view;
 
-import enums.Action;
 import java.awt.Color;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -17,7 +16,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-import models.Player;
+
+import enums.Action;
+import util.Sprite;
 
 public class Ski extends JLabel {
 
@@ -32,15 +33,14 @@ public class Ski extends JLabel {
     private int direction = 1;
     private int randomXPosition = 0;
 
-    private int rotate = 0;
-    private int mouseX = 0;
     private Action action = Action.FALLING;
-    private Player spriteLoader = new Player();
+    private Sprite sprite = new Sprite();
 
     public Ski() {
-        this.setBackground(new Color(0, 0, 0, 0));
+        //this.setBackground(new Color(0, 0, 0, 0));
+        this.setBackground(Color.RED);
         this.setOpaque(true);
-        setSprite(spriteLoader.getIdle());
+        setSprite();
 
         this.addMouseMotionListener(new MouseMotionAdapter() { // Arrastrar
             @Override
@@ -48,11 +48,10 @@ public class Ski extends JLabel {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, Ski.this.getTopLevelAncestor());
 
-                System.out.println(point.x - mouseX);
-                action = Action.DRAG;
-                setSprite(spriteLoader.getDrag());
                 x = point.x - width / 2;
                 y = point.y;
+                action = Action.DRAG;
+                setSprite();
             }
         });
 
@@ -63,12 +62,11 @@ public class Ski extends JLabel {
                 SwingUtilities.convertPointFromScreen(point, Ski.this.getTopLevelAncestor());
 
                 action = Action.FALLING;
-                setSprite(spriteLoader.getJump());
+                setSprite();
             }
         }));
 
         new Timer(10, (ActionEvent e) -> { // Repeticion
-            rotate++;
             switch (action) {
                 case WALK, RUN -> {
                     if (hSpeed < hLim) {
@@ -81,14 +79,14 @@ public class Ski extends JLabel {
                             continue;
                         }
 
-                        setSprite(spriteLoader.getIdle());
                         action = Action.IDLE;
+                        setSprite();
                     }
                 }
                 case JUMP -> {
                     y -= 1000;
-                    setSprite(spriteLoader.getJump());
                     action = Action.FALLING;
+                    setSprite();
                 }
                 case FALLING -> {
                     if (vSpeed < vLim) {
@@ -101,18 +99,13 @@ public class Ski extends JLabel {
                             continue;
                         }
 
-                        setSprite(spriteLoader.getIdle());
                         vSpeed = 0;
-                        action = Action.IDLE;
                         y = Main.HEIGHT - height;
+                        action = Action.IDLE;
+                        setSprite();
                     }
                 }
-                case DRAG -> {
-                    Point point = MouseInfo.getPointerInfo().getLocation();
-                    SwingUtilities.convertPointFromScreen(point, Ski.this.getTopLevelAncestor());
-
-                    mouseX = point.x;
-                }
+                case DRAG -> {}
                 default -> {
                     if (hSpeed >= 0) {
                         hSpeed -= .2f;
@@ -126,7 +119,7 @@ public class Ski extends JLabel {
                 }
             }
 
-            setBounds((int) x, (int) y, width, height);
+            this.setBounds((int) x, (int) y, width, height);
         }).start();
 
         AtomicInteger timeRandom = new AtomicInteger(10000);
@@ -138,27 +131,25 @@ public class Ski extends JLabel {
                 return;
             }
 
-            switch (actionSelected) {
+            action = actionSelected;
+
+            switch (action) {
                 case IDLE ->
-                    setSprite(spriteLoader.getIdle());
+                    setSprite();
                 case WALK, RUN -> {
                     randomXPosition = (int) (Main.WIDTH * Math.random());
                     direction = (int) Math.signum(randomXPosition - x);
                     hLim = actionSelected == Action.WALK ? 3 : 7;
 
-                    setSprite(actionSelected == Action.WALK ? spriteLoader.getWalk() : spriteLoader.getRun());
+                    setSprite();
                 }
-                case SIT ->
-                    setSprite(spriteLoader.getSit());
-                case UP ->
-                    setSprite(spriteLoader.getUp());
-                case DOWN ->
-                    setSprite(spriteLoader.getDown());
+                case SIT -> setSprite();
+                case UP -> setSprite();
+                case DOWN -> setSprite();
                 default -> {
                 }
             }
 
-            action = actionSelected;
             timeRandom.set((int) (Math.random() * 10000));
             ((Timer) e.getSource()).setDelay(timeRandom.get());
 
@@ -183,14 +174,16 @@ public class Ski extends JLabel {
         return new ImageIcon(flipped);
     }
 
-    private void setSprite(Icon sprite) {
+    private void setSprite() {
+        Icon icon = sprite.get(action);
+
         if (this.direction == -1) {
-            sprite = flipHorizontal(sprite);
+            icon = flipHorizontal(icon);
         }
 
-        this.setIcon(sprite);
-        this.y += this.height - sprite.getIconHeight();
-        this.width = sprite.getIconWidth();
-        this.height = sprite.getIconHeight();
+        this.setIcon(icon);
+        this.y += this.height - icon.getIconHeight();
+        this.width = icon.getIconWidth();
+        this.height = icon.getIconHeight();
     }
 }
