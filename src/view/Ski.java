@@ -1,5 +1,6 @@
 package view;
 
+import enums.Action;
 import java.awt.Color;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -16,8 +17,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import enums.Action;
 import util.Sprite;
 
 public class Ski extends JLabel {
@@ -67,6 +66,7 @@ public class Ski extends JLabel {
         }));
 
         new Timer(10, (ActionEvent e) -> { // Repeticion
+            //new step();
             switch (action) {
                 case WALK, RUN -> {
                     if (hSpeed < hLim) {
@@ -81,41 +81,47 @@ public class Ski extends JLabel {
 
                         action = Action.IDLE;
                         setSprite();
+                        break;
                     }
                 }
                 case JUMP -> {
-                    y -= 1000;
+                    if (vSpeed < 0) {
+                        y += vSpeed;
+                        vSpeed += .2f;
+
+                        break;
+                    }
+
                     action = Action.FALLING;
                     setSprite();
                 }
                 case FALLING -> {
                     if (vSpeed < vLim) {
-                        vSpeed += .8f;
+                        vSpeed += .2f;
                     }
 
                     for (int i = 0; i < vSpeed; i++) {
-                        if (y < Main.HEIGHT - height) {
+                        if (y < Main.SCREEN_HEIGHT - height) {
                             y++;
                             continue;
                         }
 
                         vSpeed = 0;
-                        y = Main.HEIGHT - height;
+                        y = Main.SCREEN_HEIGHT - height;
                         action = Action.IDLE;
                         setSprite();
                     }
                 }
-                case DRAG -> {}
+                case DRAG -> {
+                }
                 default -> {
-                    if (hSpeed >= 0) {
-                        hSpeed -= .2f;
-                    } else {
+                    if (hSpeed < 0) {
                         hSpeed = 0;
+                        break;
                     }
 
-                    for (int i = 0; i < hSpeed; i++) {
-                        x += direction;
-                    }
+                    hSpeed -= .2f;
+                    x += (int) (direction * hSpeed);
                 }
             }
 
@@ -137,15 +143,22 @@ public class Ski extends JLabel {
                 case IDLE ->
                     setSprite();
                 case WALK, RUN -> {
-                    randomXPosition = (int) (Main.WIDTH * Math.random());
+                    randomXPosition = (int) (Main.SCREEN_WIDTH * Math.random());
                     direction = (int) Math.signum(randomXPosition - x);
                     hLim = actionSelected == Action.WALK ? 3 : 7;
 
                     setSprite();
                 }
-                case SIT -> setSprite();
-                case UP -> setSprite();
-                case DOWN -> setSprite();
+                case JUMP -> {
+                    vSpeed = -8;
+                    setSprite();
+                }
+                case SIT ->
+                    setSprite();
+                case UP ->
+                    setSprite();
+                case DOWN ->
+                    setSprite();
                 default -> {
                 }
             }
@@ -155,6 +168,10 @@ public class Ski extends JLabel {
 
             System.out.println(actionSelected);
         }).start();
+    }
+
+    private class step {
+
     }
 
     private Icon flipHorizontal(Icon icon) {

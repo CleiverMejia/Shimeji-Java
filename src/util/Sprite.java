@@ -11,7 +11,19 @@ public class Sprite {
     private final String URL_BASE = "src/assets/Ski_";
     private final int SCALE = 4;
 
-    private Map<Action, ImageIcon> spriteImages = new HashMap<>();
+    Map<String, String> sprNames = Map.of(
+            "idle", "idle.png",
+            "walk", "walk.gif",
+            "run", "run.gif",
+            "jump", "jump.png",
+            "drag", "drag.png",
+            "falling", "jump.png",
+            "down", "down.png",
+            "up", "up.png",
+            "sit", "sit.png"
+    );
+
+    private final Map<Action, ImageIcon> spriteImages = new HashMap<>();
 
     public Sprite() {
         for (Action action : Action.values()) {
@@ -19,7 +31,7 @@ public class Sprite {
 
             ImageIcon icon = new ImageIcon(URL_BASE + sprName + ".png");
             Image iconBig = icon.getImage().getScaledInstance(
-                icon.getIconWidth() * SCALE, icon.getIconHeight() * SCALE, Image.SCALE_SMOOTH
+                    icon.getIconWidth() * SCALE, icon.getIconHeight() * SCALE, Image.SCALE_SMOOTH
             );
 
             spriteImages.put(action, new ImageIcon(iconBig));

@@ -9,14 +9,14 @@ import javax.swing.JPanel;
 public class Main extends JFrame {
 
     private static final Rectangle screenSize = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
-    public static final int WIDTH = screenSize.width;
-    public static final int HEIGHT = screenSize.height;
+    public static final int SCREEN_WIDTH = screenSize.width;
+    public static final int SCREEN_HEIGHT = screenSize.height;
 
-    public Main() {
+    public void run() {
         JPanel containerPanel = new JPanel();
 
         containerPanel.setLayout(null);
-        containerPanel.setBounds(0, 0, WIDTH, HEIGHT);
+        containerPanel.setBounds(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         containerPanel.setBackground(Color.WHITE);
         containerPanel.setOpaque(false);
 
@@ -26,7 +26,7 @@ public class Main extends JFrame {
 
         this.add(containerPanel);
 
-        this.setSize(WIDTH, HEIGHT);
+        this.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
         this.setUndecorated(true);
         this.setLocationRelativeTo(null);

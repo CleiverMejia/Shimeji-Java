@@ -1,13 +1,13 @@
 package enums;
 
 public enum Action {
+    IDLE,
     WALK,
     RUN,
-    IDLE,
+    JUMP,
     SIT,
     UP,
     DOWN,
-    JUMP,
     FALLING,
     DRAG
 }
