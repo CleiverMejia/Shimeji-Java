@@ -1,5 +1,6 @@
 package view;
 
+import enums.Action;
 import java.awt.Color;
 import java.awt.MouseInfo;
 import java.awt.Point;
@@ -16,8 +17,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
-
-import enums.Action;
 import util.Sprite;
 
 public class Ski extends JLabel {
