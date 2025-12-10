@@ -2,15 +2,15 @@ package view;
 
 import enums.Action;
 import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
-import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -59,6 +59,7 @@ public class Ski extends JLabel {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, Ski.this.getTopLevelAncestor());
 
+                vSpeed = 0;
                 action = Action.FALLING;
                 setSprite();
             }
@@ -72,30 +73,28 @@ public class Ski extends JLabel {
         new Thread(new ActionSelect()).start();
     }
 
-    private Icon flipHorizontal(Icon icon) {
-        int w = icon.getIconWidth();
-        int h = icon.getIconHeight();
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
 
-        BufferedImage img = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
-        icon.paintIcon(null, img.getGraphics(), 0, 0);
+        Icon icon = Sprite.get(action);
+        Image img = ((ImageIcon) icon).getImage();
 
-        AffineTransform tx = AffineTransform.getScaleInstance(-1, 1);
-        tx.translate(-w, 0);
+        Graphics2D g2 = (Graphics2D) g.create();
 
-        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        BufferedImage flipped = op.filter(img, null);
+        if (direction == -1) {
+            g2.scale(-1, 1);
+            g2.drawImage(img, -icon.getIconWidth(), 0, null);
+        } else {
+            g2.drawImage(img, 0, 0, null);
+        }
 
-        return new ImageIcon(flipped);
+        g2.dispose();
     }
 
     private void setSprite() {
         Icon icon = Sprite.get(action);
 
-        if (this.direction == -1) {
-            icon = flipHorizontal(icon);
-        }
-
-        this.setIcon(icon);
         this.y += this.height - icon.getIconHeight();
         this.width = icon.getIconWidth();
         this.height = icon.getIconHeight();
@@ -190,7 +189,7 @@ public class Ski extends JLabel {
                     case WALK, RUN -> {
                         randomXPosition = (int) (Main.SCREEN_WIDTH * Math.random());
                         direction = (int) Math.signum(randomXPosition - x);
-                        hLim = actionSelected == Action.WALK ? 3 : 7;
+                        hLim = actionSelected == Action.WALK ? 4 : 7;
                     }
                     case JUMP ->
                         vSpeed = -8;

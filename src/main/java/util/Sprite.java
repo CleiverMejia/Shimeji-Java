@@ -2,7 +2,19 @@ package util;
 
 import enums.Action;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.util.Iterator;
 import java.util.Map;
+import javax.imageio.IIOImage;
+import javax.imageio.ImageIO;
+import javax.imageio.ImageReader;
+import javax.imageio.ImageWriter;
+import javax.imageio.metadata.IIOMetadata;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageOutputStream;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
@@ -10,35 +22,15 @@ public class Sprite {
 
     private static final int SCALE = 4;
 
-    private static final ImageIcon idleIcon = load("idle.png");
-    private static final ImageIcon walkIcon = load("walk.gif");
-    private static final ImageIcon runIcon = load("run.gif");
-    private static final ImageIcon jumpIcon = load("jump.png");
-    private static final ImageIcon dragIcon = load("drag.png");
-    private static final ImageIcon fallingIcon = load("jump.png");
-    private static final ImageIcon upIcon = load("up.png");
-    private static final ImageIcon downIcon = load("down.png");
-    private static final ImageIcon sitIcon = load("sit.png");
-
-    private static final Image idleImage = idleIcon.getImage().getScaledInstance(idleIcon.getIconWidth() * SCALE, idleIcon.getIconHeight() * SCALE, Image.SCALE_SMOOTH);
-    private static final Image walkImage = walkIcon.getImage().getScaledInstance(walkIcon.getIconWidth() * SCALE, walkIcon.getIconHeight() * SCALE, Image.SCALE_DEFAULT);
-    private static final Image runImage = runIcon.getImage().getScaledInstance(runIcon.getIconWidth() * SCALE, runIcon.getIconHeight() * SCALE, Image.SCALE_DEFAULT);
-    private static final Image jumpImage = jumpIcon.getImage().getScaledInstance(jumpIcon.getIconWidth() * SCALE, jumpIcon.getIconHeight() * SCALE, Image.SCALE_SMOOTH);
-    private static final Image dragImage = dragIcon.getImage().getScaledInstance(dragIcon.getIconWidth() * SCALE, dragIcon.getIconHeight() * SCALE, Image.SCALE_SMOOTH);
-    private static final Image fallingImage = fallingIcon.getImage().getScaledInstance(fallingIcon.getIconWidth() * SCALE, fallingIcon.getIconHeight() * SCALE, Image.SCALE_SMOOTH);
-    private static final Image upImage = upIcon.getImage().getScaledInstance(upIcon.getIconWidth() * SCALE, upIcon.getIconHeight() * SCALE, Image.SCALE_SMOOTH);
-    private static final Image downImage = downIcon.getImage().getScaledInstance(downIcon.getIconWidth() * SCALE, downIcon.getIconHeight() * SCALE, Image.SCALE_SMOOTH);
-    private static final Image sitImage = sitIcon.getImage().getScaledInstance(sitIcon.getIconWidth() * SCALE, sitIcon.getIconHeight() * SCALE, Image.SCALE_SMOOTH);
-
-    private static final Icon idle = new ImageIcon(idleImage);
-    private static final Icon walk = new ImageIcon(walkImage);
-    private static final Icon run = new ImageIcon(runImage);
-    private static final Icon jump = new ImageIcon(jumpImage);
-    private static final Icon drag = new ImageIcon(dragImage);
-    private static final Icon falling = new ImageIcon(fallingImage);
-    private static final Icon up = new ImageIcon(upImage);
-    private static final Icon down = new ImageIcon(downImage);
-    private static final Icon sit = new ImageIcon(sitImage);
+    private static final Icon idle = loadImage("idle.png");
+    private static final Icon walk = loadImage("walk.gif");
+    private static final Icon run = loadImage("run.gif");
+    private static final Icon jump = loadImage("jump.png");
+    private static final Icon drag = loadImage("drag.png");
+    private static final Icon falling = loadImage("jump.png");
+    private static final Icon up = loadImage("up.png");
+    private static final Icon down = loadImage("down.png");
+    private static final Icon sit = loadImage("sit.png");
 
     private static final Map<Action, Icon> sprImages = Map.of(
             Action.IDLE, idle,
@@ -52,8 +44,17 @@ public class Sprite {
             Action.SIT, sit
     );
 
-    private static ImageIcon load(String name) {
-        return new ImageIcon(Sprite.class.getResource("/assets/Ski_" + name));
+    private static ImageIcon loadImage(String name) {
+        String path = "/assets/Ski_" + name;
+
+        ImageIcon icon = new ImageIcon(Sprite.class.getResource(path));
+        Image image = icon.getImage().getScaledInstance(
+                icon.getIconWidth() * SCALE,
+                icon.getIconHeight() * SCALE,
+                Image.SCALE_DEFAULT
+        );
+
+        return new ImageIcon(image);
     }
 
     public static Icon get(Action action) {
