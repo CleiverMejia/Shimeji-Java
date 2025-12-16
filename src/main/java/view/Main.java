@@ -50,7 +50,7 @@ public class Main extends JFrame {
         if (SystemTray.isSupported()) {
             SystemTray tray;
             tray = SystemTray.getSystemTray();
-            Image icon = new ImageIcon(Main.class.getResource("/assets/Ski.png")).getImage();
+            Image icon = new ImageIcon(Main.class.getResource("/assets/Ski_icon.png")).getImage();
 
             PopupMenu menu = new PopupMenu();
             MenuItem abrir = new MenuItem("Llamar");

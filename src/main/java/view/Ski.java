@@ -4,35 +4,45 @@ import enums.Action;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.awt.image.BufferedImage;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
+import util.FrameGroup;
 import util.Sprite;
 
 public class Ski extends JLabel {
 
+    // Horizontal movement
     private float x = 0;
     private float hSpeed = 0;
     private int hLim = 0;
+
+    // Vertical movement
     private float y = 0;
     private float vSpeed = 0;
     private final float vLim = 10;
+
     private int width = 0;
     private int height = 0;
+
     private int direction = 1;
     private int randomXPosition = 0;
 
+    // Animation
     private Action action = Action.FALLING;
+    private int imageIndex = 0;
+    private int spriteIndex = 0;
+    private final FrameGroup groupFrame = Sprite.get(action);
+    private BufferedImage frame = groupFrame.getFrame(imageIndex);
+    private final int SCALE = 3;
 
     public Ski() {
         this.setBackground(new Color(0, 0, 0, 0));
@@ -69,35 +79,46 @@ public class Ski extends JLabel {
     }
 
     private void initThreads() {
-        new Thread(new Step()).start();
-        new Thread(new ActionSelect()).start();
+        new Step().start();
+        new ActionSelect().start();
     }
 
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
 
-        Icon icon = Sprite.get(action);
-        Image img = ((ImageIcon) icon).getImage();
-
         Graphics2D g2 = (Graphics2D) g.create();
 
         if (direction == -1) {
-            g2.scale(-1, 1);
-            g2.drawImage(img, -icon.getIconWidth(), 0, null);
+            g2.scale(-SCALE, SCALE);
+            g2.drawImage(frame, -frame.getWidth(), 0, null);
         } else {
-            g2.drawImage(img, 0, 0, null);
+            g2.scale(SCALE, SCALE);
+            g2.drawImage(frame, 0, 0, null);
+        }
+
+        if (spriteIndex > groupFrame.getDuration(imageIndex)) {
+            spriteIndex %= groupFrame.getDuration(imageIndex);
+
+            imageIndex++;
+            if (groupFrame.isRepeat()) {
+                imageIndex %= groupFrame.size();
+            } else {
+                imageIndex = Math.min(imageIndex, groupFrame.size() - 1);
+            }
+
+            setSprite();
         }
 
         g2.dispose();
     }
 
     private void setSprite() {
-        Icon icon = Sprite.get(action);
+        this.frame = groupFrame.getFrame(imageIndex);
 
-        this.y += this.height - icon.getIconHeight();
-        this.width = icon.getIconWidth();
-        this.height = icon.getIconHeight();
+        this.y += this.height - frame.getHeight() * SCALE;
+        this.width = frame.getWidth() * SCALE;
+        this.height = frame.getHeight() * SCALE;
     }
 
     private class Step extends Thread {
@@ -105,6 +126,8 @@ public class Ski extends JLabel {
         @Override
         public void run() {
             new Timer(10, (ActionEvent e) -> {
+                spriteIndex += 20;
+
                 switch (action) {
                     case WALK, RUN -> {
                         if (hSpeed < hLim) {
@@ -162,6 +185,7 @@ public class Ski extends JLabel {
                 }
 
                 setBounds((int) x, (int) y, width, height);
+                repaint();
             }).start();
         }
     }

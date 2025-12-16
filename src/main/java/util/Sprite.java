@@ -1,51 +1,40 @@
 package util;
 
 import enums.Action;
-import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
+import javax.imageio.ImageIO;
 
 public class Sprite {
 
-    private static final int SCALE = 4;
+    private static final BufferedImage sheet;
 
-    private static final Icon idle = loadImage("idle.png");
-    private static final Icon walk = loadImage("walk.gif");
-    private static final Icon run = loadImage("run.gif");
-    private static final Icon jump = loadImage("jump.png");
-    private static final Icon drag = loadImage("drag.png");
-    private static final Icon falling = loadImage("jump.png");
-    private static final Icon up = loadImage("up.png");
-    private static final Icon down = loadImage("down.png");
-    private static final Icon sit = loadImage("sit.png");
+    private static final Frame[] idleCoord = {
+        new Frame(29, 1, 27, 33, 300),
+        new Frame(1, 36, 27, 34, 300)
+    };
 
-    private static final Map<Action, Icon> sprImages = Map.of(
-            Action.IDLE, idle,
-            Action.WALK, walk,
-            Action.RUN, run,
-            Action.JUMP, jump,
-            Action.DRAG, drag,
-            Action.FALLING, falling,
-            Action.DOWN, down,
-            Action.UP, up,
-            Action.SIT, sit
-    );
+    private static final Map<Action, FrameGroup> sprImages = new HashMap<>();
 
-    private static ImageIcon loadImage(String name) {
-        String path = "/assets/Ski_" + name;
+    static {
+        try {
+            sheet = ImageIO.read(Sprite.class.getResource("/assets/ski.png"));
 
-        ImageIcon icon = new ImageIcon(Sprite.class.getResource(path));
-        Image image = icon.getImage().getScaledInstance(
-                icon.getIconWidth() * SCALE,
-                icon.getIconHeight() * SCALE,
-                Image.SCALE_DEFAULT
-        );
+            final FrameGroup idle = new FrameGroup(idleCoord, true);
 
-        return new ImageIcon(image);
+            sprImages.put(Action.IDLE, idle);
+        } catch (IOException e) {
+            throw new ExceptionInInitializerError(e);
+        }
     }
 
-    public static Icon get(Action action) {
-        return sprImages.get(action);
+    public static BufferedImage getSheet() {
+        return sheet;
+    }
+
+    public static FrameGroup get(Action action) {
+        return sprImages.get(Action.IDLE);
     }
 }
