@@ -10,6 +10,10 @@ import java.awt.Rectangle;
 import java.awt.SystemTray;
 import java.awt.TrayIcon;
 import java.awt.Window;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -22,7 +26,7 @@ public class Main extends JFrame {
     public static final int SCREEN_WIDTH = screenSize.width;
     public static final int SCREEN_HEIGHT = screenSize.height;
 
-    public void run() throws AWTException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException {
+    public void run() throws AWTException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, IOException {
         JPanel containerPanel = new JPanel();
 
         containerPanel.setLayout(null);
@@ -45,6 +49,16 @@ public class Main extends JFrame {
         this.setBackground(new Color(0, 0, 0, 0));
         this.setType(Window.Type.UTILITY);
         this.setVisible(true);
+
+        Path config = Paths.get(
+                System.getenv("APPDATA"),
+                "Shimeji",
+                "config.properties"
+        );
+
+        if (!Files.exists(config.getParent())) {
+            Files.createDirectories(config.getParent());
+        }
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         if (SystemTray.isSupported()) {

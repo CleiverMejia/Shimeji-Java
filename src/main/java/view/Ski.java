@@ -30,17 +30,19 @@ public class Ski extends JLabel {
     private float vSpeed = 0;
     private final float vLim = 10;
 
-    private int width = 0;
-    private int height = 0;
-
+    // Movement
     private int direction = 1;
     private int randomXPosition = 0;
+
+    // Sprite
+    private int width = 0;
+    private int height = 0;
 
     // Animation
     private Action action = Action.FALLING;
     private int imageIndex = 0;
     private int spriteIndex = 0;
-    private final FrameGroup groupFrame = Sprite.get(action);
+    private FrameGroup groupFrame = Sprite.get(action);
     private BufferedImage frame = groupFrame.getFrame(imageIndex);
     private final int SCALE = 3;
 
@@ -107,13 +109,20 @@ public class Ski extends JLabel {
                 imageIndex = Math.min(imageIndex, groupFrame.size() - 1);
             }
 
-            setSprite();
+            frame = groupFrame.getFrame(imageIndex);
+
+            y += height - frame.getHeight() * SCALE;
+            width = frame.getWidth() * SCALE;
+            height = frame.getHeight() * SCALE;
         }
 
         g2.dispose();
     }
 
     private void setSprite() {
+        this.imageIndex = 0;
+        this.spriteIndex = 0;
+        this.groupFrame = Sprite.get(action);
         this.frame = groupFrame.getFrame(imageIndex);
 
         this.y += this.height - frame.getHeight() * SCALE;
@@ -126,7 +135,7 @@ public class Ski extends JLabel {
         @Override
         public void run() {
             new Timer(10, (ActionEvent e) -> {
-                spriteIndex += 20;
+                spriteIndex += 10;
 
                 switch (action) {
                     case WALK, RUN -> {
@@ -173,6 +182,8 @@ public class Ski extends JLabel {
                             setSprite();
                         }
                     }
+                    case DRAG -> {
+                    }
                     default -> {
                         if (hSpeed < 0) {
                             hSpeed = 0;
@@ -213,7 +224,7 @@ public class Ski extends JLabel {
                     case WALK, RUN -> {
                         randomXPosition = (int) (Main.SCREEN_WIDTH * Math.random());
                         direction = (int) Math.signum(randomXPosition - x);
-                        hLim = actionSelected == Action.WALK ? 4 : 7;
+                        hLim = actionSelected == Action.WALK ? 3 : 7;
                     }
                     case JUMP ->
                         vSpeed = -8;
