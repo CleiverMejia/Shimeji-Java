@@ -12,15 +12,44 @@ public class Sprite {
     private static final BufferedImage sheet;
 
     private static final Frame[] idleCoord = {
-        new Frame(27, 34, 27, 33, 300),
-        new Frame(0, 0, 27, 34, 300)
+        new Frame(0, 51, 26, 25, 300),
+        new Frame(53, 0, 26, 26, 300)
     };
 
     private static final Frame[] walkCoord = {
-        new Frame(54, 34, 27, 33, 200),
-        new Frame(0, 67, 27, 32, 200),
-        new Frame(27, 0, 27, 34, 200),
-        new Frame(54, 0, 27, 34, 200)
+        new Frame(52, 51, 26, 25, 200),
+        new Frame(79, 0, 26, 26, 200),
+        new Frame(78, 51, 26, 25, 200)
+    };
+
+    private static final Frame[] runCoord = {
+        new Frame(53, 26, 27, 25, 100),
+        new Frame(0, 0, 27, 26, 100),
+        new Frame(80, 26, 27, 25, 100)
+    };
+
+    private static final Frame[] jumpCoord = {
+        new Frame(0, 76, 25, 25, 100)
+    };
+
+    private static final Frame[] downCoord = {
+        new Frame(52, 76, 26, 23, 100)
+    };
+
+    private static final Frame[] upCoord = {
+        new Frame(26, 54, 26, 25, 100)
+    };
+
+    private static final Frame[] sitCoord = {
+        new Frame(78, 76, 26, 22, 300)
+    };
+
+    private static final Frame[] dragCoord = {
+        new Frame(27, 0, 26, 27, 300)
+    };
+
+    private static final Frame[] fallingCoord = {
+        new Frame(27, 27, 25, 27, 300)
     };
 
     private static final Map<Action, FrameGroup> sprImages = new HashMap<>();
@@ -31,9 +60,23 @@ public class Sprite {
 
             final FrameGroup idle = new FrameGroup(idleCoord, true);
             final FrameGroup walk = new FrameGroup(walkCoord, true);
+            final FrameGroup run = new FrameGroup(runCoord, true);
+            final FrameGroup jump = new FrameGroup(jumpCoord, false);
+            final FrameGroup down = new FrameGroup(downCoord, false);
+            final FrameGroup up = new FrameGroup(upCoord, false);
+            final FrameGroup sit = new FrameGroup(sitCoord, false);
+            final FrameGroup drag = new FrameGroup(dragCoord, false);
+            final FrameGroup falling = new FrameGroup(fallingCoord, false);
 
             sprImages.put(Action.IDLE, idle);
             sprImages.put(Action.WALK, walk);
+            sprImages.put(Action.RUN, run);
+            sprImages.put(Action.JUMP, jump);
+            sprImages.put(Action.DOWN, down);
+            sprImages.put(Action.UP, up);
+            sprImages.put(Action.SIT, sit);
+            sprImages.put(Action.DRAG, drag);
+            sprImages.put(Action.FALLING, falling);
         } catch (IOException e) {
             throw new ExceptionInInitializerError(e);
         }

@@ -58,6 +58,7 @@ public class Main extends JFrame {
 
         if (!Files.exists(config.getParent())) {
             Files.createDirectories(config.getParent());
+            Files.createFile(config);
         }
 
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

@@ -143,6 +143,15 @@ public class Ski extends JLabel {
                             hSpeed += .5f;
                         }
 
+                        /* if (Math.signum(randomXPosition - x + hSpeed * direction) > 0) {
+                            x += hSpeed*direction;
+                            break;
+                        }
+
+                        action = Action.IDLE;
+                        setSprite();
+                        break; */
+
                         for (int i = 0; i < hSpeed; i++) {
                             if (Math.signum(randomXPosition - x + direction) != 0) {
                                 x += direction;
