@@ -12,32 +12,32 @@ public class Sprite {
     private static final BufferedImage sheet;
 
     private static final Frame[] idleCoord = {
-        new Frame(0, 51, 26, 25, 300),
+        new Frame(78, 26, 26, 25, 300),
         new Frame(53, 0, 26, 26, 300)
     };
 
     private static final Frame[] walkCoord = {
-        new Frame(52, 51, 26, 25, 200),
+        new Frame(27, 27, 26, 25, 200),
         new Frame(79, 0, 26, 26, 200),
-        new Frame(78, 51, 26, 25, 200)
+        new Frame(104, 50, 26, 25, 200)
     };
 
     private static final Frame[] runCoord = {
-        new Frame(53, 26, 27, 25, 100),
+        new Frame(105, 25, 27, 25, 100),
         new Frame(0, 0, 27, 26, 100),
-        new Frame(80, 26, 27, 25, 100)
+        new Frame(0, 26, 27, 25, 100)
     };
 
     private static final Frame[] jumpCoord = {
-        new Frame(0, 76, 25, 25, 100)
+        new Frame(104, 75, 25, 25, 100)
     };
 
     private static final Frame[] downCoord = {
-        new Frame(52, 76, 26, 23, 100)
+        new Frame(0, 76, 26, 23, 100)
     };
 
     private static final Frame[] upCoord = {
-        new Frame(26, 54, 26, 25, 100)
+        new Frame(0, 51, 26, 25, 100)
     };
 
     private static final Frame[] sitCoord = {
@@ -49,7 +49,18 @@ public class Sprite {
     };
 
     private static final Frame[] fallingCoord = {
-        new Frame(27, 27, 25, 27, 300)
+        new Frame(53, 26, 25, 27, 300)
+    };
+
+    private static final Frame[] helpyCoord = {
+        new Frame(26, 77, 22, 7, 300)
+    };
+
+    private static final Frame[] trumpetCoord = {
+        new Frame(78, 51, 26, 25, 300),
+        new Frame(26, 52, 26, 25, 300),
+        new Frame(78, 51, 26, 25, 300),
+        new Frame(52, 53, 26, 25, 300)
     };
 
     private static final Map<Action, FrameGroup> sprImages = new HashMap<>();
@@ -67,6 +78,8 @@ public class Sprite {
             final FrameGroup sit = new FrameGroup(sitCoord, false);
             final FrameGroup drag = new FrameGroup(dragCoord, false);
             final FrameGroup falling = new FrameGroup(fallingCoord, false);
+            final FrameGroup helpy = new FrameGroup(helpyCoord, false);
+            final FrameGroup trumpet = new FrameGroup(trumpetCoord, true);
 
             sprImages.put(Action.IDLE, idle);
             sprImages.put(Action.WALK, walk);
@@ -77,6 +90,8 @@ public class Sprite {
             sprImages.put(Action.SIT, sit);
             sprImages.put(Action.DRAG, drag);
             sprImages.put(Action.FALLING, falling);
+            sprImages.put(Action.HELPY, helpy);
+            sprImages.put(Action.TRUMPET, trumpet);
         } catch (IOException e) {
             throw new ExceptionInInitializerError(e);
         }

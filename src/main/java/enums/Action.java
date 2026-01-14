@@ -8,6 +8,8 @@ public enum Action {
     SIT,
     UP,
     DOWN,
+    TRUMPET,
     FALLING,
-    DRAG
+    DRAG,
+    HELPY,
 }

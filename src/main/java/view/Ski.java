@@ -2,6 +2,7 @@ package view;
 
 import enums.Action;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
@@ -20,16 +21,6 @@ import util.Sprite;
 
 public class Ski extends JLabel {
 
-    // Horizontal movement
-    private float x = 0;
-    private float hSpeed = 0;
-    private int hLim = 0;
-
-    // Vertical movement
-    private float y = 0;
-    private float vSpeed = 0;
-    private final float vLim = 10;
-
     // Movement
     private int direction = 1;
     private int randomXPosition = 0;
@@ -39,12 +30,25 @@ public class Ski extends JLabel {
     private int height = 0;
 
     // Animation
-    private Action action = Action.FALLING;
+    private Action action = Action.JUMP;
     private int imageIndex = 0;
     private int spriteIndex = 0;
     private FrameGroup groupFrame = Sprite.get(action);
     private BufferedImage frame = groupFrame.getFrame(imageIndex);
     private final int SCALE = 3;
+
+    // Horizontal movement
+    private float x = -70;
+    private float hSpeed = 3;
+    private int hLim = 3;
+
+    // Vertical movement
+    private float y = Main.SCREEN_HEIGHT - height;
+    private float vSpeed = -8;
+    private final float vLim = 10;
+
+    // Time
+    AtomicInteger timeRandom = new AtomicInteger(10000);
 
     public Ski() {
         this.setBackground(new Color(0, 0, 0, 0));
@@ -58,6 +62,7 @@ public class Ski extends JLabel {
                 Point point = MouseInfo.getPointerInfo().getLocation();
                 SwingUtilities.convertPointFromScreen(point, Ski.this.getTopLevelAncestor());
 
+                hSpeed = 0;
                 x = point.x - width / 2;
                 y = point.y;
                 action = Action.DRAG;
@@ -81,8 +86,26 @@ public class Ski extends JLabel {
     }
 
     private void initThreads() {
+        init();
         new Step().start();
         new ActionSelect().start();
+    }
+
+    private void init() {
+        int randomStart = (int) (Math.random() * 2);
+
+        switch (randomStart) {
+            case 0 -> {
+                x = 0;
+                y = -height;
+                hSpeed = 0;
+                vSpeed = 0;
+
+                action = Action.FALLING;
+            }
+            default -> {
+            }
+        }
     }
 
     @Override
@@ -135,6 +158,7 @@ public class Ski extends JLabel {
         @Override
         public void run() {
             new Timer(10, (ActionEvent e) -> {
+                boolean isColliding = collision();
                 spriteIndex += 10;
 
                 switch (action) {
@@ -143,17 +167,8 @@ public class Ski extends JLabel {
                             hSpeed += .5f;
                         }
 
-                        /* if (Math.signum(randomXPosition - x + hSpeed * direction) > 0) {
-                            x += hSpeed*direction;
-                            break;
-                        }
-
-                        action = Action.IDLE;
-                        setSprite();
-                        break; */
-
                         for (int i = 0; i < hSpeed; i++) {
-                            if (Math.signum(randomXPosition - x + direction) != 0) {
+                            if (Math.signum(randomXPosition - (x + direction)) != 0) {
                                 x += direction;
                                 continue;
                             }
@@ -162,12 +177,18 @@ public class Ski extends JLabel {
                             setSprite();
                             break;
                         }
+
+                        if (((int) (Math.random() * 50)) == 0) {
+                            vSpeed = -6;
+                            action = Action.JUMP;
+                            setSprite();
+                        }
                     }
                     case JUMP -> {
                         if (vSpeed < 0) {
+                            x += hSpeed * direction;
                             y += vSpeed;
                             vSpeed += .2f;
-
                             break;
                         }
 
@@ -175,7 +196,15 @@ public class Ski extends JLabel {
                         setSprite();
                     }
                     case FALLING -> {
+                        if (isColliding) {
+                            vSpeed = -6;
+                            action = Action.JUMP;
+                            setSprite();
+                            break;
+                        }
+
                         if (vSpeed < vLim) {
+                            x += hSpeed * direction;
                             vSpeed += .2f;
                         }
 
@@ -185,22 +214,21 @@ public class Ski extends JLabel {
                                 continue;
                             }
 
-                            vSpeed = 0;
                             y = Main.SCREEN_HEIGHT - height;
-                            action = Action.IDLE;
+
+                            int randomNumber = (int) (Math.random() * 20);
+                            action = randomNumber == 0 ? Action.HELPY : Action.IDLE;
                             setSprite();
                         }
                     }
-                    case DRAG -> {
-                    }
                     default -> {
+                        hSpeed -= .2f;
                         if (hSpeed < 0) {
                             hSpeed = 0;
                             break;
                         }
 
-                        hSpeed -= .2f;
-                        x += (int) (direction * hSpeed);
+                        x += direction * hSpeed;
                     }
                 }
 
@@ -208,16 +236,43 @@ public class Ski extends JLabel {
                 repaint();
             }).start();
         }
+
+        private boolean collision() {
+            if (getParent() == null) {
+                return false;
+            }
+
+            Component[] childrens = getParent().getComponents();
+
+            for (Component component : childrens) {
+                if (component instanceof Ski ski && ski != null) {
+                    if (ski.getX() == getX() && ski.getY() == getY()) {
+                        continue;
+                    }
+
+                    if (getBounds().intersects(ski.getBounds())) {
+                        int dist = (getY() + getHeight()) - ski.getY();
+                        return dist <= 10;
+                    }
+                }
+            }
+
+            return false;
+        }
     }
 
     private class ActionSelect extends Thread {
 
         @Override
         public void run() {
-            AtomicInteger timeRandom = new AtomicInteger(10000);
             new Timer(timeRandom.get(), (ActionEvent e) -> {
                 int rNumber = (int) (Math.random() * 7);
                 Action actionSelected = Action.values()[rNumber];
+
+                if (action == Action.HELPY
+                        && !(actionSelected == Action.JUMP || actionSelected == Action.SIT)) {
+                    return;
+                }
 
                 if (action == Action.WALK
                         || action == Action.RUN

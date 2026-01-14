@@ -2,18 +2,19 @@ package view;
 
 import java.awt.AWTException;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
 import java.awt.MenuItem;
+import java.awt.Point;
 import java.awt.PopupMenu;
 import java.awt.Rectangle;
 import java.awt.SystemTray;
+import java.awt.Toolkit;
 import java.awt.TrayIcon;
 import java.awt.Window;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -27,13 +28,17 @@ public class Main extends JFrame {
     public static final int SCREEN_HEIGHT = screenSize.height;
 
     public void run() throws AWTException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, IOException {
-        JPanel containerPanel = new JPanel();
+        JPanel containerPanel;
+        containerPanel = new JPanel();
 
         containerPanel.setLayout(null);
         containerPanel.setBounds(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
         containerPanel.setBackground(Color.WHITE);
         containerPanel.setOpaque(false);
 
+        Config configPanel = new Config();
+
+        containerPanel.add(configPanel);
         containerPanel.add(new Ski());
         containerPanel.add(new Ski());
         containerPanel.add(new Ski());
@@ -50,17 +55,6 @@ public class Main extends JFrame {
         this.setType(Window.Type.UTILITY);
         this.setVisible(true);
 
-        Path config = Paths.get(
-                System.getenv("APPDATA"),
-                "Shimeji",
-                "config.properties"
-        );
-
-        if (!Files.exists(config.getParent())) {
-            Files.createDirectories(config.getParent());
-            Files.createFile(config);
-        }
-
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         if (SystemTray.isSupported()) {
             SystemTray tray;
@@ -68,14 +62,26 @@ public class Main extends JFrame {
             Image icon = new ImageIcon(Main.class.getResource("/assets/Ski_icon.png")).getImage();
 
             PopupMenu menu = new PopupMenu();
-            MenuItem abrir = new MenuItem("Llamar");
-            MenuItem salir = new MenuItem("Cerrar");
+            MenuItem call = new MenuItem("Llamar");
+            MenuItem config = new MenuItem("Configuracion");
+            MenuItem hammer = new MenuItem("Martillo");
+            MenuItem close = new MenuItem("Cerrar");
 
-            abrir.addActionListener(e -> this.setVisible(true));
-            salir.addActionListener(e -> System.exit(0));
+            call.addActionListener(e -> this.setVisible(true));
+            close.addActionListener(e -> System.exit(0));
+            config.addActionListener(e -> configPanel.setVisible(true));
 
-            menu.add(abrir);
-            menu.add(salir);
+            Toolkit toolkit = Toolkit.getDefaultToolkit();
+            Image img = new ImageIcon(Main.class.getResource("/assets/Hammer1.png")).getImage();
+
+            Point hotspot = new Point(19, 20);
+            Cursor cursor = toolkit.createCustomCursor(img, hotspot, "MiCursor");
+            hammer.addActionListener(e -> this.setCursor(cursor));
+
+            menu.add(call);
+            menu.add(config);
+            menu.add(hammer);
+            menu.add(close);
 
             TrayIcon trayIcon = new TrayIcon(icon, "Ski Shimeji", menu);
             trayIcon.setImageAutoSize(true);
