@@ -32,7 +32,7 @@ public class Sandbox extends JPanel {
     private boolean drop = false;
     private Point mousePos = MouseInfo.getPointerInfo().getLocation();
 
-    private final boolean DEBUG = false;
+    public static boolean debug = false;
 
     public Sandbox() {
         setLayout(null);
@@ -83,7 +83,7 @@ public class Sandbox extends JPanel {
                 g2.drawImage(ski.frame, 0, 0, null);
             }
 
-            if (DEBUG) {
+            if (debug) {
                 g2.setTransform(at);
                 g2.setColor(new Color(255, 0, 0, 128));
                 g2.fillRect(ski.x, ski.y, ski.width, ski.height);
@@ -113,11 +113,28 @@ public class Sandbox extends JPanel {
                 oneDragged = false;
                 ski.dragged = false;
             }
+
+            ski.isColliding = collision(ski);
         }
 
         drop = false;
 
         repaint();
         g2.dispose();
+    }
+
+    private boolean collision(Ski curSki) {
+        for (Ski ski : creatures) {
+            if (ski.x == curSki.x && ski.y == curSki.y) {
+                continue;
+            }
+
+            if (curSki.intersects(ski.getBounds())) {
+                int dist = (int) ((curSki.y + curSki.height) - ski.y);
+                return dist <= 10;
+            }
+        }
+
+        return false;
     }
 }

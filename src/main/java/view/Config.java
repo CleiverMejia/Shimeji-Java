@@ -1,13 +1,16 @@
 package view;
 
 import java.awt.Color;
+import java.awt.event.ItemEvent;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 
 public class Config extends JPanel {
+
     private final int width = 200;
     private final int height = 500;
     public static float scale = 3;
@@ -18,6 +21,7 @@ public class Config extends JPanel {
         JSlider scaleSlider = new JSlider(1, 500, 300);
         JLabel opacityLabel = new JLabel("Opacidad:");
         JSlider opacitySlider = new JSlider(0, 100, 100);
+        JCheckBox debug = new JCheckBox("debug");
         JButton close = new JButton("X");
 
         close.addActionListener(l -> {
@@ -26,7 +30,7 @@ public class Config extends JPanel {
 
         scaleSlider.setMajorTickSpacing(1);
         scaleSlider.addChangeListener(e -> {
-            Config.scale = scaleSlider.getValue()/100f;
+            Config.scale = scaleSlider.getValue() / 100f;
         });
 
         scaleSlider.setMajorTickSpacing(5);
@@ -34,14 +38,19 @@ public class Config extends JPanel {
             Config.opacity = opacitySlider.getValue();
         });
 
+        debug.addItemListener((ItemEvent e) -> {
+            Sandbox.debug = (e.getStateChange() == ItemEvent.SELECTED);
+        });
+
         this.add(scaleLabel);
         this.add(scaleSlider);
         this.add(opacityLabel);
         this.add(opacitySlider);
+        this.add(debug);
         this.add(close);
 
         this.setVisible(false);
-        this.setBounds(Main.SCREEN_WIDTH/2 - width/2, Main.SCREEN_HEIGHT/2 - height/2, width, height);
+        this.setBounds(Main.SCREEN_WIDTH / 2 - width / 2, Main.SCREEN_HEIGHT / 2 - height / 2, width, height);
         this.setBackground(Color.GRAY);
     }
 }

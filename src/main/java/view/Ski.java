@@ -11,22 +11,22 @@ import view.ski.Step;
 public class Ski extends Rectangle {
 
     // Movement
-    public byte direction = 1;
+    public int direction = 1;
     public short randomXPosition = 0;
 
     // Animation
-    public Action action = Action.FALLING;
+    public Action action = Action.JUMP;
     public int imageIndex = 0;
     public int spriteIndex = 0;
     public FrameGroup groupFrame = Sprite.get(action);
     public BufferedImage frame = groupFrame.getFrame(imageIndex);
 
     // Horizontal movement
-    public float hSpeed = 3f;
-    public byte hLim = 3;
+    public float hSpeed = 0;
+    public int hLim = 3;
 
     // Vertical movement
-    public float vSpeed = -8f;
+    public float vSpeed = 0;
     public final float VLIM = 10f;
 
     // Threads
@@ -34,6 +34,7 @@ public class Ski extends Rectangle {
     private final ActionSeleted actionSeleted = new ActionSeleted(this);
 
     public boolean dragged = false;
+    public boolean isColliding = false;
 
     public Ski() {
         initThreads();
@@ -50,7 +51,6 @@ public class Ski extends Rectangle {
         width = (int) (13 * Config.scale);
         height = (int) (23 * Config.scale);
 
-        setSprite();
         switch (randomStart) {
             case 0 -> {
                 x = 50;
@@ -58,11 +58,15 @@ public class Ski extends Rectangle {
                 hSpeed = 0f;
                 vSpeed = 0f;
 
-                action = Action.FALLING;
+                setAction(Action.FALLING);
             }
             default -> {
                 x = -70;
                 y = Main.SCREEN_HEIGHT - height;
+                hSpeed = 3f;
+                vSpeed = -8f;
+
+                setAction(Action.JUMP);
             }
         }
     }

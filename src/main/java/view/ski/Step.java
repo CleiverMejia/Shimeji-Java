@@ -1,10 +1,8 @@
 package view.ski;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.Timer;
-
 import enums.Action;
+import java.awt.event.ActionEvent;
+import javax.swing.Timer;
 import view.Main;
 import view.Ski;
 
@@ -53,6 +51,12 @@ public class Step extends Thread {
                     ski.setAction(Action.FALLING);
                 }
                 case FALLING -> {
+                    if (ski.isColliding) {
+                        ski.vSpeed = -6;
+                        ski.setAction(Action.JUMP);
+                        break;
+                    }
+
                     if (ski.vSpeed < ski.VLIM) {
                         ski.x += ski.hSpeed * ski.direction;
                         ski.vSpeed += .2f;

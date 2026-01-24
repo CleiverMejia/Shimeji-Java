@@ -1,11 +1,9 @@
 package view.ski;
 
+import enums.Action;
 import java.awt.event.ActionEvent;
 import java.util.concurrent.atomic.AtomicInteger;
-
 import javax.swing.Timer;
-
-import enums.Action;
 import view.Main;
 import view.Ski;
 
@@ -42,8 +40,8 @@ public class ActionSeleted extends Thread {
             switch (ski.action) {
                 case WALK, RUN -> {
                     ski.randomXPosition = (short) (Main.SCREEN_WIDTH * Math.random());
-                    ski.direction = (byte) Math.signum(ski.randomXPosition - ski.x);
-                    ski.hLim = (byte) (actionSelected == Action.WALK ? 3 : 7);
+                    ski.direction = (int) Math.signum(ski.randomXPosition - ski.x);
+                    ski.hLim = (actionSelected == Action.WALK ? 3 : 7);
                 }
                 case JUMP ->
                     ski.vSpeed = -8f;
