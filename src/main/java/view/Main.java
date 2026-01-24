@@ -2,7 +2,6 @@ package view;
 
 import java.awt.AWTException;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.GraphicsEnvironment;
 import java.awt.Image;
@@ -28,22 +27,12 @@ public class Main extends JFrame {
     public static final int SCREEN_HEIGHT = screenSize.height;
 
     public void run() throws AWTException, ClassNotFoundException, InstantiationException, IllegalAccessException, UnsupportedLookAndFeelException, IOException {
-        JPanel containerPanel;
-        containerPanel = new JPanel();
-
-        containerPanel.setLayout(null);
-        containerPanel.setBounds(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
-        containerPanel.setBackground(Color.WHITE);
-        containerPanel.setOpaque(false);
-
+        JPanel sandbox = new Sandbox();
         Config configPanel = new Config();
 
-        containerPanel.add(configPanel);
-        containerPanel.add(new Ski());
-        containerPanel.add(new Ski());
-        containerPanel.add(new Ski());
+        sandbox.add(configPanel);
 
-        this.add(containerPanel);
+        this.add(sandbox);
 
         this.setSize(SCREEN_WIDTH, SCREEN_HEIGHT);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
