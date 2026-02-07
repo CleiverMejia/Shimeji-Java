@@ -33,8 +33,13 @@ public class Ski extends Rectangle {
     private final Step step = new Step(this);
     private final ActionSeleted actionSeleted = new ActionSeleted(this);
 
+    // Actions
     public boolean dragged = false;
     public boolean isColliding = false;
+
+    // Hitbox
+    protected final int hitboxW = 13;
+    protected final int hitboxH = 23;
 
     public Ski() {
         initThreads();
@@ -48,8 +53,8 @@ public class Ski extends Rectangle {
 
     private void init() {
         int randomStart = (int) (Math.random() * 2);
-        width = (int) (13 * Config.scale);
-        height = (int) (23 * Config.scale);
+        width = (int) (hitboxW * Config.scale);
+        height = (int) (hitboxH * Config.scale);
 
         switch (randomStart) {
             case 0 -> {

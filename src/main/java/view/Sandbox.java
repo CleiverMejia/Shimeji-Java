@@ -65,9 +65,21 @@ public class Sandbox extends JPanel {
         AffineTransform at = g2.getTransform();
 
         for (Ski ski : creatures) {
+            int hitboxW = (int) (ski.hitboxW * Config.scale);
+            int hitboxH = (int) (ski.hitboxH * Config.scale);
+
+            if (ski.width != hitboxW && ski.height != hitboxH) {
+                ski.x += (ski.width - hitboxW) / 2;
+                ski.y += ski.height - hitboxH;
+
+                ski.width = hitboxW;
+                ski.height = hitboxH;
+            }
+
             AffineTransform at2 = new AffineTransform(at);
+
             at2.translate(
-                    ski.x - ((ski.frame.getWidth() * Config.scale) / 4),
+                    (ski.x + ski.width / 2) - (ski.frame.getWidth() * Config.scale / 2),
                     ski.y - (ski.frame.getHeight() * Config.scale - ski.height)
             );
             g2.setComposite(AlphaComposite.getInstance(

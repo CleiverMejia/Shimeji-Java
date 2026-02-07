@@ -2,7 +2,6 @@ package view;
 
 import java.awt.Color;
 import java.awt.event.ItemEvent;
-
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -13,6 +12,7 @@ public class Config extends JPanel {
 
     private final int width = 200;
     private final int height = 500;
+
     public static float scale = 3;
     public static int opacity = 100;
 
