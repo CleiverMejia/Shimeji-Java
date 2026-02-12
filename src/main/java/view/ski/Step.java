@@ -2,6 +2,8 @@ package view.ski;
 
 import enums.Action;
 import java.awt.event.ActionEvent;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import javax.swing.Timer;
 import view.Main;
 import view.Ski;
@@ -9,9 +11,13 @@ import view.Ski;
 public class Step extends Thread {
 
     private final Ski ski;
+    private final AtomicReference<Action> action;
+    private final AtomicInteger randomXPosition;
 
     public Step(Ski ski) {
         this.ski = ski;
+        this.action = ski.action;
+        this.randomXPosition = ski.randomXPosition;
     }
 
     @Override
@@ -19,15 +25,15 @@ public class Step extends Thread {
         new Timer(10, (ActionEvent e) -> {
             ski.spriteIndex += 10;
 
-            switch (ski.action) {
+            switch (action.get()) {
                 case WALK, RUN -> {
                     if (ski.hSpeed < ski.hLim) {
                         ski.hSpeed += .5f;
                     }
 
                     for (int i = 0; i < ski.hSpeed; i++) {
-                        if (Math.signum(ski.randomXPosition - (ski.x + ski.direction)) != 0) {
-                            ski.x += ski.direction;
+                        if (Math.signum(randomXPosition.get() - (ski.x + ski.direction.get())) != 0) {
+                            ski.x += ski.direction.get();
                             continue;
                         }
 
@@ -42,7 +48,7 @@ public class Step extends Thread {
                 }
                 case JUMP -> {
                     if (ski.vSpeed < 0) {
-                        ski.x += ski.hSpeed * ski.direction;
+                        ski.x += ski.hSpeed * ski.direction.get();
                         ski.y += ski.vSpeed;
                         ski.vSpeed += .2f;
                         break;
@@ -58,7 +64,7 @@ public class Step extends Thread {
                     }
 
                     if (ski.vSpeed < ski.VLIM) {
-                        ski.x += ski.hSpeed * ski.direction;
+                        ski.x += ski.hSpeed * ski.direction.get();
                         ski.vSpeed += .2f;
                     }
 
@@ -81,7 +87,7 @@ public class Step extends Thread {
                         break;
                     }
 
-                    ski.x += ski.direction * ski.hSpeed;
+                    ski.x += ski.direction.get() * ski.hSpeed;
                 }
             }
 

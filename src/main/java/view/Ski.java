@@ -3,6 +3,8 @@ package view;
 import enums.Action;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import util.FrameGroup;
 import util.Sprite;
 import view.ski.ActionSeleted;
@@ -11,14 +13,14 @@ import view.ski.Step;
 public class Ski extends Rectangle {
 
     // Movement
-    public int direction = 1;
-    public short randomXPosition = 0;
+    public final AtomicInteger direction = new AtomicInteger(1);
+    public final AtomicInteger randomXPosition = new AtomicInteger(0);
 
     // Animation
-    public Action action = Action.JUMP;
+    public final AtomicReference<Action> action = new AtomicReference<>(Action.JUMP);
     public int imageIndex = 0;
     public int spriteIndex = 0;
-    public FrameGroup groupFrame = Sprite.get(action);
+    public FrameGroup groupFrame = Sprite.get(action.get());
     public BufferedImage frame = groupFrame.getFrame(imageIndex);
 
     // Horizontal movement
@@ -77,14 +79,14 @@ public class Ski extends Rectangle {
     }
 
     public void setAction(Action action) {
-        this.action = action;
+        this.action.set(action);
         setSprite();
     }
 
     public void setSprite() {
         this.imageIndex = 0;
         this.spriteIndex = 0;
-        this.groupFrame = Sprite.get(action);
+        this.groupFrame = Sprite.get(action.get());
         this.frame = groupFrame.getFrame(imageIndex);
     }
 }

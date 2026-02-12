@@ -12,55 +12,55 @@ public class Sprite {
     private static final BufferedImage sheet;
 
     private static final Frame[] idleCoord = {
-        new Frame(78, 26, 26, 25, 300),
-        new Frame(53, 0, 26, 26, 300)
+        new Frame(111, 51, 26, 25, 300, 6),
+        new Frame(111, 0, 26, 26, 300, 6)
     };
 
     private static final Frame[] walkCoord = {
-        new Frame(27, 27, 26, 25, 200),
-        new Frame(79, 0, 26, 26, 200),
-        new Frame(104, 50, 26, 25, 200)
+        new Frame(52, 52, 26, 25, 200, 6),
+        new Frame(58, 26, 26, 26, 200, 6),
+        new Frame(78, 52, 26, 25, 200, 6)
     };
 
     private static final Frame[] runCoord = {
-        new Frame(105, 25, 27, 25, 100),
-        new Frame(0, 0, 27, 26, 100),
-        new Frame(0, 26, 27, 25, 100)
+        new Frame(84, 27, 27, 25, 100, 6),
+        new Frame(58, 0, 27, 26, 100, 6),
+        new Frame(0, 29, 27, 25, 100, 6)
     };
 
     private static final Frame[] jumpCoord = {
-        new Frame(104, 75, 25, 25, 100)
+        new Frame(78, 77, 25, 25, 100, 6)
     };
 
     private static final Frame[] downCoord = {
-        new Frame(0, 76, 26, 23, 100)
+        new Frame(0, 79, 26, 23, 100, 6)
     };
 
     private static final Frame[] upCoord = {
-        new Frame(0, 51, 26, 25, 100)
+        new Frame(0, 54, 26, 25, 100, 7)
     };
 
     private static final Frame[] sitCoord = {
-        new Frame(78, 76, 26, 22, 300)
+        new Frame(26, 81, 26, 22, 300, 6)
     };
 
     private static final Frame[] dragCoord = {
-        new Frame(27, 0, 26, 27, 300)
+        new Frame(85, 0, 26, 27, 300, 5)
     };
 
     private static final Frame[] fallingCoord = {
-        new Frame(53, 26, 25, 27, 300)
+        new Frame(27, 29, 25, 27, 300, 6)
     };
 
     private static final Frame[] helpyCoord = {
-        new Frame(26, 77, 22, 7, 300)
+        new Frame(103, 101, 22, 7, 300, 7)
     };
 
     private static final Frame[] trumpetCoord = {
-        new Frame(78, 51, 26, 25, 300),
-        new Frame(26, 52, 26, 25, 300),
-        new Frame(78, 51, 26, 25, 300),
-        new Frame(52, 53, 26, 25, 300)
+        new Frame(26, 56, 26, 25, 300, 6),
+        new Frame(104, 76, 26, 25, 300, 5),
+        new Frame(26, 56, 26, 25, 300, 6),
+        new Frame(52, 77, 26, 25, 300, 7)
     };
 
     private static final Map<Action, FrameGroup> sprImages = new HashMap<>();

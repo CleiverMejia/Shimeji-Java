@@ -68,6 +68,7 @@ public class Sandbox extends JPanel {
             int hitboxW = (int) (ski.hitboxW * Config.scale);
             int hitboxH = (int) (ski.hitboxH * Config.scale);
 
+            // Scaling hitbox
             if (ski.width != hitboxW && ski.height != hitboxH) {
                 ski.x += (ski.width - hitboxW) / 2;
                 ski.y += ski.height - hitboxH;
@@ -79,7 +80,7 @@ public class Sandbox extends JPanel {
             AffineTransform at2 = new AffineTransform(at);
 
             at2.translate(
-                    (ski.x + ski.width / 2) - (ski.frame.getWidth() * Config.scale / 2),
+                    ski.x - ((13 - ski.groupFrame.getLeftMargin(ski.imageIndex)) * Config.scale),
                     ski.y - (ski.frame.getHeight() * Config.scale - ski.height)
             );
             g2.setComposite(AlphaComposite.getInstance(
@@ -87,7 +88,7 @@ public class Sandbox extends JPanel {
             ));
             g2.setTransform(at2);
 
-            if (ski.direction == -1) {
+            if (ski.direction.get() == -1) {
                 g2.scale(-Config.scale, Config.scale);
                 g2.drawImage(ski.frame, -ski.frame.getWidth(), 0, null);
             } else {
